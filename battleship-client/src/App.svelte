@@ -4,10 +4,15 @@
   import Counter from './lib/Counter.svelte'
   import Board from './lib/Board.svelte'
   import Piece from './lib/Piece.svelte'
+  import ChangeOrientationButton from './lib/ChangeOrientationButton.svelte'
+  import GameStatus from './lib/GameStatus.svelte'
+  import { WebsocketClient } from './lib/WebsocketClient.js'
 
+  const wsClient = new WebsocketClient('ws://localhost:8080');
+  
   let selectedPiece = $state(null);
   let board = $state(Array(10).fill(null).map(() => Array(10).fill(null)));
-
+  let gameStatus = $state('Waiting for opponent...');
   let pieces = $state({
     '1': { length: 5, orientation: 'horizontal', placed: false },
     '2': { length: 3, orientation: 'vertical', placed: false },
@@ -24,6 +29,13 @@
     }
   }
 
+  function handleOrientationChange() {
+    if (selectedPiece) {
+      const piece = pieces[selectedPiece];
+      piece.orientation = piece.orientation === 'horizontal' ? 'vertical' : 'horizontal';
+    }
+  }
+
   function handleCellHover(row, col) {
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
@@ -34,7 +46,6 @@
     }
     
     if (!selectedPiece) return;
-    console.log(`Hovered cell at [${row}, ${col}]`);
     const piece = pieces[selectedPiece];
     if (piece.orientation === 'horizontal') {
       if (col + piece.length > 10) return;
@@ -94,16 +105,19 @@
 <main>
   <h1>BATTLESHIP</h1>
 
-
+  <GameStatus status={gameStatus}/>
 
   <Board board={board} onCellClick={handleCellClick} onCellHover={handleCellHover}/>
 
-  {#if !pieces['1'].placed}<Piece id="1" size={pieces['1'].length} orientation={pieces['1'].orientation} selected={selectedPiece === '1'} onSelect={handleSelect}/>{/if}  
-  {#if !pieces['2'].placed}<Piece id="2" size={pieces['2'].length} orientation={pieces['2'].orientation} selected={selectedPiece === '2'} onSelect={handleSelect}/>{/if}
-  {#if !pieces['3'].placed}<Piece id="3" size={pieces['3'].length} orientation={pieces['3'].orientation} selected={selectedPiece === '3'} onSelect={handleSelect}/>{/if}
-  {#if !pieces['4'].placed}<Piece id="4" size={pieces['4'].length} orientation={pieces['4'].orientation} selected={selectedPiece === '4'} onSelect={handleSelect}/>{/if}
+  {#if !pieces['1'].placed}<Piece id="1" size={pieces['1'].length} orientation={pieces['1'].orientation} selected={selectedPiece === '1'} onSelect={handleSelect} />{/if}  
+  {#if !pieces['2'].placed}<Piece id="2" size={pieces['2'].length} orientation={pieces['2'].orientation} selected={selectedPiece === '2'} onSelect={handleSelect} />{/if}
+  {#if !pieces['3'].placed}<Piece id="3" size={pieces['3'].length} orientation={pieces['3'].orientation} selected={selectedPiece === '3'} onSelect={handleSelect} />{/if}
+  {#if !pieces['4'].placed}<Piece id="4" size={pieces['4'].length} orientation={pieces['4'].orientation} selected={selectedPiece === '4'} onSelect={handleSelect} />{/if}
 
- 
+  {#if !Object.values(pieces).every(piece => piece.placed)}<ChangeOrientationButton onOrientationChange={handleOrientationChange}/>{/if}
+
+
+  
 </main>
 
 <style>
