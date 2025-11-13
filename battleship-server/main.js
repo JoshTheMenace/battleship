@@ -29,10 +29,29 @@ let game = new Game();
 
 
 
+
+
 wss.on('connection', function connection(ws) {
   const player = new Player('Player ' + clients.size + 1);
   game.addPlayer(player);
   clients.set(ws, player.id);
+
+  ws.on('message', (message) => {
+    const data = JSON.parse(message);
+    console.log('Message received:', data);
+    if (data.type === 'placePiece') {
+      let targetPlayer = game.getPlayer(data.playerId);
+      if (!targetPlayer) {
+        console.log('Player not found');
+        return;
+      }
+
+      
+      
+      ws.send(JSON.stringify({ type: 'placePieceResponse', success: targetPlayer.placePiece(data.piece, data.row, data.col), playerId: data.playerId, piece: data.piece, row: data.row, col: data.col }));
+      console.log('piece placed:', data.piece, 'by player', data.playerId, 'at', data.row, data.col);
+    }
+  });
 
   ws.on('close', () => {
     console.log('Client disconnected');

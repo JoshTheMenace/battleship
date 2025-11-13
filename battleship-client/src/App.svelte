@@ -71,7 +71,7 @@
   }
 
   function handleCellClick(row, col) {
-    console.log(`Clicked cell at [${row}, ${col}]`);
+    // console.log(`Clicked cell at [${row}, ${col}]`);
     if (selectedPiece) {
       console.log(`Placing piece ${selectedPiece} at [${row}, ${col}]`);
       const piece = pieces[selectedPiece];
@@ -94,10 +94,12 @@
           board[row + i][col] = selectedPiece;
         }
       }
+      wsClient.sendMessage(JSON.stringify({ type: 'placePiece', playerId: wsClient.player.id, piece: selectedPiece, row: row, col: col }));
       
       // Deselect piece after placement
       selectedPiece = null;
       piece.placed = true;
+
     }
   }
 </script>
