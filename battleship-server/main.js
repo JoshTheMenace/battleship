@@ -1,9 +1,20 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import { Player } from './Player.js';
 import { Game } from './game.js';
 const wss = new WebSocketServer({ port: 8080 });
 
 const clients = new Map();
+
+// Helper function to broadcast to all connected clients
+function broadcast(message) {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+}
+
+
 
 
 
@@ -18,6 +29,7 @@ let game = new Game();
 wss.on('connection', function connection(ws) {
   const player = new Player('Player ' + clients.size + 1);
   game.addPlayer(player);
+  console.log('Player added:', player);
   clients.set(ws, player.id);
 
   ws.on('message', (message) => {
@@ -46,7 +58,11 @@ wss.on('connection', function connection(ws) {
 
       if (Array.from(game.players.values()).every(player => player.ready)) {
         game.gameStatus = 'playing';
-        console.log('Game started');
+        const playersArray = Array.from(game.players.values());
+        const randomIndex = Math.floor(Math.random() * 2);
+        game.turn = playersArray[randomIndex].id;
+        console.log('Game started, turn:', game.turn);
+        broadcast(JSON.stringify({ type: 'turn', turn: game.turn }));
       }
 
     } else if (data.type === 'attack') {
@@ -55,9 +71,12 @@ wss.on('connection', function connection(ws) {
         console.log('Player not found');
         return;
       }
-      let result = game.attack(data.playerId, data.row, data.col);
-      ws.send(JSON.stringify({ type: 'attackResponse', result: result, playerId: data.playerId, row: data.row, col: data.col }));
-      console.log('Player', data.playerId, 'attacked cell', data.row, data.col);
+      let [result, opponentId] = game.attack(data.playerId, data.row, data.col);
+      if (result !== null) {
+        broadcast(JSON.stringify({ type: 'attackResponse', result: result, playerId: opponentId, row: data.row, col: data.col }));
+        console.log('Player', data.playerId, 'attacked cell', data.row, data.col);
+        broadcast(JSON.stringify({ type: 'turn', turn: game.turn }));
+      }
     }
   });
 

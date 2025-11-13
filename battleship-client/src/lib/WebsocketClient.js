@@ -40,7 +40,12 @@ export class WebsocketClient {
             } else if (data.type === 'attackResponse') {
                 console.log('Attack response:', data.result, 'by player', data.playerId, 'at', data.row, data.col);
                 if (this.callbacks.onAttackResponse) {
-                    this.callbacks.onAttackResponse(data.result, data.row, data.col);
+                    this.callbacks.onAttackResponse(data.result, data.row, data.col, data.playerId);
+                }
+            } else if (data.type === 'turn') {
+                console.log('Turn:', data.turn);
+                if (this.callbacks.onTurnUpdate) {
+                    this.callbacks.onTurnUpdate(data.turn);
                 }
             }
         };

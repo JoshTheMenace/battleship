@@ -13,9 +13,23 @@
     onBoardUpdate: (updatedBoard) => {
       board = updatedBoard;
     },
-    onAttackResponse: (result, row, col) => {
+    onAttackResponse: (result, row, col, playerId) => {
       console.log(`Attack response: ${result} at [${row}, ${col}]`);
-      attackingBoard[row][col] = result;
+      if(playerId === wsClient.player.id) {
+        board[row][col] = result;
+      } else {
+        
+        attackingBoard[row][col] = result;
+      }
+    },
+    onTurnUpdate: (turn) => {
+      console.log(`Turn: ${turn}`);
+      let yourTurn = turn === wsClient.player.id;
+      if(yourTurn) {
+        gameStatus = 'It\'s your turn';
+      } else {
+        gameStatus = 'It\'s opponent\'s turn';
+      }
     }
   });
   let gameStatus = $state('Waiting for opponent...');
@@ -113,7 +127,6 @@
   }
 
   function handleAttackingCellHover(row, col) {
-    console.log(`Attacking cell hovered at [${row}, ${col}]`);
     for (let i = 0; i < attackingBoard.length; i++) {
       for (let j = 0; j < attackingBoard[i].length; j++) {
         if (attackingBoard[i][j] == 'attack') {
