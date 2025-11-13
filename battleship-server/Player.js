@@ -5,6 +5,12 @@ class Player {
     this.id = Math.random().toString(36).substring(2, 15);
     this.board = new Array(10).fill(null).map(() => new Array(10).fill(null));
     this.ready = false;
+    this.placingPieces = true;
+    this.pieces = [1,2,3,4];
+  }
+
+  setReady(ready) {
+    this.ready = ready;
   }
 
   checkPlacement(piece, row, col) {
@@ -30,16 +36,23 @@ class Player {
     
     if (piece.orientation === 'horizontal') {
       for (let i = 0; i < piece.length; i++) {
-        this.board[row][col + i] = piece;
-        return true;
+        this.board[row][col + i] = piece.id;
       }
+      this.pieces.splice(this.pieces.indexOf(piece.id), 1);
+      if (this.pieces.length === 0) {
+        this.placingPieces = false;
+      }
+      return true;
     } else {
       for (let i = 0; i < piece.length; i++) {
-        this.board[row + i][col] = piece;
-        return true;
+        this.board[row + i][col] = piece.id;
       }
+      this.pieces.splice(this.pieces.indexOf(piece.id), 1);
+      if (this.pieces.length === 0) {
+        this.placingPieces = false;
+      }
+      return true;
     }
-    return false; // Placement failed
   }
 }
 

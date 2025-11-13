@@ -1,9 +1,11 @@
 // a websocket client that can be used to connect to the battleship server
 
 export class WebsocketClient {
-    constructor(url) {
+    constructor(url, callbacks = {}) {
         this.game = null;
         this.player = null;
+        this.board = null;
+        this.callbacks = callbacks;
         if (typeof url !== 'string') {
             throw new Error('URL must be a string');
         }
@@ -28,6 +30,17 @@ export class WebsocketClient {
                     console.log('Place piece successful');
                 } else {
                     console.log('Place piece failed');
+                }
+                this.board = data.board;
+                console.log('Board:', this.board);
+                // Trigger the callback to update the board in the UI
+                if (this.callbacks.onBoardUpdate) {
+                    this.callbacks.onBoardUpdate(this.board);
+                }
+            } else if (data.type === 'attackResponse') {
+                console.log('Attack response:', data.result, 'by player', data.playerId, 'at', data.row, data.col);
+                if (this.callbacks.onAttackResponse) {
+                    this.callbacks.onAttackResponse(data.result, data.row, data.col);
                 }
             }
         };

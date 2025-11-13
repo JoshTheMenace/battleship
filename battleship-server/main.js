@@ -1,26 +1,10 @@
 import { WebSocketServer } from 'ws';
 import { Player } from './Player.js';
+import { Game } from './game.js';
 const wss = new WebSocketServer({ port: 8080 });
 
 const clients = new Map();
 
-
-class Game {
-  constructor() {
-    this.id = Math.random().toString(36).substring(2, 15);
-    this.gameStatus = 'waiting for players';
-    this.players = new Map();
-  }
-  addPlayer(player) {
-    this.players.set(player.id, player);
-  }
-  removePlayer(player) {
-    this.players.delete(player.id);
-  }
-  getPlayer(id) {
-    return this.players.get(id);
-  }
-}
 
 
 let game = new Game();
@@ -48,8 +32,32 @@ wss.on('connection', function connection(ws) {
 
       
       
-      ws.send(JSON.stringify({ type: 'placePieceResponse', success: targetPlayer.placePiece(data.piece, data.row, data.col), playerId: data.playerId, piece: data.piece, row: data.row, col: data.col }));
+      ws.send(JSON.stringify({ type: 'placePieceResponse', success: targetPlayer.placePiece(data.piece, data.row, data.col), playerId: data.playerId, piece: data.piece, board: targetPlayer.board }));
       console.log('piece placed:', data.piece, 'by player', data.playerId, 'at', data.row, data.col);
+    
+    } else if (data.type === 'ready') {
+      let targetPlayer = game.getPlayer(data.playerId);
+      if (!targetPlayer) {
+        console.log('Player not found');
+        return;
+      }
+      targetPlayer.setReady(true);
+      console.log('Player', data.playerId, 'is ready');
+
+      if (Array.from(game.players.values()).every(player => player.ready)) {
+        game.gameStatus = 'playing';
+        console.log('Game started');
+      }
+
+    } else if (data.type === 'attack') {
+      let targetPlayer = game.getPlayer(data.playerId);
+      if (!targetPlayer) {
+        console.log('Player not found');
+        return;
+      }
+      let result = game.attack(data.playerId, data.row, data.col);
+      ws.send(JSON.stringify({ type: 'attackResponse', result: result, playerId: data.playerId, row: data.row, col: data.col }));
+      console.log('Player', data.playerId, 'attacked cell', data.row, data.col);
     }
   });
 
