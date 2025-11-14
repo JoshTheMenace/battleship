@@ -1,4 +1,4 @@
-# Battleship Game
+# Battleship Game (CS 3380 Project)
 
 A real-time multiplayer Battleship game with WebSocket communication, Svelte frontend, and Node.js backend.
 
