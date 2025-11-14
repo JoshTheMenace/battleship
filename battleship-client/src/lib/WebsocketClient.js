@@ -47,6 +47,11 @@ export class WebsocketClient {
                 if (this.callbacks.onTurnUpdate) {
                     this.callbacks.onTurnUpdate(data.turn);
                 }
+            } else if (data.type === 'gameOver') {
+                console.log('Game over:', data.winner);
+                if (this.callbacks.onGameOver) {
+                    this.callbacks.onGameOver(data.winner);
+                }
             }
         };
         this.socket.onerror = (error) => {

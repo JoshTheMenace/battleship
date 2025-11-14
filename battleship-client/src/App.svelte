@@ -30,6 +30,15 @@
       } else {
         gameStatus = 'It\'s opponent\'s turn';
       }
+    },
+    onGameOver: (winner) => {
+      console.log('Game over:', winner);
+      gameStatus = 'Game over';
+      if (winner === wsClient.player.id) {
+        gameStatus = 'You won!';
+      } else {
+        gameStatus = 'You lost!';
+      }
     }
   });
   let gameStatus = $state('Waiting for opponent...');

@@ -76,6 +76,12 @@ wss.on('connection', function connection(ws) {
         broadcast(JSON.stringify({ type: 'attackResponse', result: result, playerId: opponentId, row: data.row, col: data.col }));
         console.log('Player', data.playerId, 'attacked cell', data.row, data.col);
         broadcast(JSON.stringify({ type: 'turn', turn: game.turn }));
+
+        if (game.checkPlayerWon(targetPlayer.id)) {
+          game.gameStatus = 'won';
+          broadcast(JSON.stringify({ type: 'gameOver', winner: targetPlayer.id }));
+          console.log('Player', targetPlayer.id, 'won the game');
+        }
       }
     }
   });

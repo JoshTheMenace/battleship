@@ -22,10 +22,14 @@ class Game {
       console.log('Player not found');
       return;
     }
-    if(player.board.some(row => row.some(cell => cell === 'hit'))) {
-      return true;
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        if (player.board[row][col] === '1' || player.board[row][col] === '2' || player.board[row][col] === '3' || player.board[row][col] === '4') {
+          return false;
+        }
+      }
     }
-    return false;
+    return true;
   }
 
   attack(playerId, row, col) {
