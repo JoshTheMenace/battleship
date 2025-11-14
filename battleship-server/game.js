@@ -26,7 +26,7 @@ class Game {
     console.log('Player found:', player);
     for (let row = 0; row < 10; row++) {
       for (let col = 0; col < 10; col++) {
-        if (player.board[row][col] === '1' || player.board[row][col] === '2' || player.board[row][col] === '3' || player.board[row][col] === '4') {
+        if (player.board[row][col] === '1' || player.board[row][col] === '2' || player.board[row][col] === '3' || player.board[row][col] === '4' || player.board[row][col] === '5') {
           console.log('Player has not won');
           return false;
         }

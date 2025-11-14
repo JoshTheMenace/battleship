@@ -6,7 +6,7 @@ class Player {
     this.board = new Array(10).fill(null).map(() => new Array(10).fill(null));
     this.ready = false;
     this.placingPieces = true;
-    this.pieces = [1,2,3,4];
+    this.pieces = [1,2,3,4,5];
   }
 
   setReady(ready) {

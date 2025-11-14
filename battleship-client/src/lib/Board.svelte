@@ -13,7 +13,7 @@
     >
       {#if cell === 'hit'}❌{/if}
       {#if cell === 'miss'}⚪{/if}
-      {#if cell === '1' || cell === '2' || cell === '3' || cell === '4'}🔳{/if}
+      {#if cell === '1' || cell === '2' || cell === '3' || cell === '4' || cell === '5'}🔳{/if}
       {#if cell === 'hover'}🟨{/if}
       {#if cell === 'attack'}🟥{/if}
     </div>

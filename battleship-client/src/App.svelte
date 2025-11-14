@@ -47,9 +47,11 @@
   let gameStatus = $state('Waiting for opponent...');
   let pieces = $state({
     '1': { length: 5, orientation: 'horizontal', placed: false },
-    '2': { length: 3, orientation: 'vertical', placed: false },
+    '4': { length: 4, orientation: 'horizontal', placed: false },
+    '2': { length: 3, orientation: 'horizontal', placed: false },
     '3': { length: 3, orientation: 'horizontal', placed: false },
-    '4': { length: 4, orientation: 'vertical', placed: false },
+    '5': { length: 2, orientation: 'horizontal', placed: false },
+    
   });
 
   function handleSelect(id) {
@@ -177,7 +179,8 @@
   {#if !pieces['2'].placed}<Piece id="2" size={pieces['2'].length} orientation={pieces['2'].orientation} selected={selectedPiece === '2'} onSelect={handleSelect} />{/if}
   {#if !pieces['3'].placed}<Piece id="3" size={pieces['3'].length} orientation={pieces['3'].orientation} selected={selectedPiece === '3'} onSelect={handleSelect} />{/if}
   {#if !pieces['4'].placed}<Piece id="4" size={pieces['4'].length} orientation={pieces['4'].orientation} selected={selectedPiece === '4'} onSelect={handleSelect} />{/if}
-
+  {#if !pieces['5'].placed}<Piece id="5" size={pieces['5'].length} orientation={pieces['5'].orientation} selected={selectedPiece === '5'} onSelect={handleSelect} />{/if}
+  
   {#if !Object.values(pieces).every(piece => piece.placed)}<ChangeOrientationButton onOrientationChange={handleOrientationChange}/>{/if}
   {#if (Object.values(pieces).every(piece => piece.placed) && gameStatus == 'Waiting for opponent...')}<button onclick={handleReady}>Ready</button>{/if}
 
