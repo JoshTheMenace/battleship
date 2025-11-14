@@ -13,6 +13,9 @@
     onBoardUpdate: (updatedBoard) => {
       board = updatedBoard;
     },
+    onPiecePlaced: (piece) => {
+      pieces[piece.id].placed = true;
+    },
     onAttackResponse: (result, row, col, playerId) => {
       console.log(`Attack response: ${result} at [${row}, ${col}]`);
       if(playerId === wsClient.player.id) {
@@ -119,7 +122,7 @@
       
       // Deselect piece after placement
       selectedPiece = null;
-      piece.placed = true;
+      // piece.placed = true;
 
     }
   }
@@ -176,7 +179,7 @@
   {#if !pieces['4'].placed}<Piece id="4" size={pieces['4'].length} orientation={pieces['4'].orientation} selected={selectedPiece === '4'} onSelect={handleSelect} />{/if}
 
   {#if !Object.values(pieces).every(piece => piece.placed)}<ChangeOrientationButton onOrientationChange={handleOrientationChange}/>{/if}
-  {#if Object.values(pieces).every(piece => piece.placed)}<button onclick={handleReady}>Ready</button>{/if}
+  {#if (Object.values(pieces).every(piece => piece.placed) && gameStatus == 'Waiting for opponent...')}<button onclick={handleReady}>Ready</button>{/if}
 
   
 </main>

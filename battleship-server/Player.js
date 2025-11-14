@@ -17,12 +17,14 @@ class Player {
     if (piece.orientation === 'horizontal') {
       if (col + piece.length > 10) return false; // Out of bounds
       for (let i = 0; i < piece.length; i++) {
+        console.log('Checking cell', row, col + i, 'value:', this.board[row][col + i]);
         if (this.board[row][col + i] !== null && this.board[row][col + i] !== 'hover') return false;
       }
       return true;
     } else {
       if (row + piece.length > 10) return false; // Out of bounds
       for (let i = 0; i < piece.length; i++) {
+        console.log('Checking cell', row + i, col, 'value:', this.board[row + i][col]);
         if (this.board[row + i][col] !== null && this.board[row + i][col] !== 'hover') return false;
       }
       return true;
@@ -31,6 +33,7 @@ class Player {
 
   placePiece(piece, row, col) {
     if (!this.checkPlacement(piece, row, col)) {
+      console.log('Placement failed');
       return false;
     }
     

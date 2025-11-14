@@ -9,7 +9,10 @@
 
 <style>
   .game-status {
-    color: black;
     text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #00008B;
   }
 </style>

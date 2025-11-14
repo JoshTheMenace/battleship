@@ -16,13 +16,7 @@ function broadcast(message) {
 
 
 
-
-
 let game = new Game();
-
-
-
-
 
 
 
@@ -66,6 +60,10 @@ wss.on('connection', function connection(ws) {
       }
 
     } else if (data.type === 'attack') {
+      if(game.gameStatus !== 'playing') {
+        console.log('Game not playing');
+        return;
+      }
       let targetPlayer = game.getPlayer(data.playerId);
       if (!targetPlayer) {
         console.log('Player not found');
@@ -77,7 +75,7 @@ wss.on('connection', function connection(ws) {
         console.log('Player', data.playerId, 'attacked cell', data.row, data.col);
         broadcast(JSON.stringify({ type: 'turn', turn: game.turn }));
 
-        if (game.checkPlayerWon(targetPlayer.id)) {
+        if (game.checkPlayerWon(opponentId)) {
           game.gameStatus = 'won';
           broadcast(JSON.stringify({ type: 'gameOver', winner: targetPlayer.id }));
           console.log('Player', targetPlayer.id, 'won the game');

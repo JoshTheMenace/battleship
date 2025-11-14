@@ -27,6 +27,9 @@ export class WebsocketClient {
             } else if (data.type === 'placePieceResponse') {
                 console.log('Place piece response:', data.success, 'by player', data.playerId, 'at', data.row, data.col);
                 if (data.success) {
+                    if (this.callbacks.onPiecePlaced) {
+                        this.callbacks.onPiecePlaced(data.piece);
+                    }
                     console.log('Place piece successful');
                 } else {
                     console.log('Place piece failed');

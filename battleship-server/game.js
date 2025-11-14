@@ -17,18 +17,22 @@ class Game {
   }
 
   checkPlayerWon(playerId) {
+    console.log('Checking if player', playerId, 'won');
     let player = this.getPlayer(playerId);
     if(!player) {
       console.log('Player not found');
       return;
     }
+    console.log('Player found:', player);
     for (let row = 0; row < 10; row++) {
       for (let col = 0; col < 10; col++) {
         if (player.board[row][col] === '1' || player.board[row][col] === '2' || player.board[row][col] === '3' || player.board[row][col] === '4') {
+          console.log('Player has not won');
           return false;
         }
       }
     }
+    console.log('Player has won');
     return true;
   }
 
